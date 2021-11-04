@@ -2,6 +2,27 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSLocationUsageDescription</key>
+	<string>앱 기능을 사용하려면 현재 위치를 제공해야합니다.0</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>앱 기능을 사용하려면 현재 위치를 제공해야합니다.1</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>앱 기능을 사용하려면 현재 위치를 제공해야합니다.2</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>앱 기능을 사용하려면 현재 위치를 제공해야합니다.3</string>
+	<key>NSCameraUsageDescription</key>
+	<string>앱 기능을 사용하려면 카메라 권한이 필요합니다.</string>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSExceptionDomains</key>
+		<dict>
+			<key>http://3.145.25.38:9000/</key>
+			<dict>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
+				<true/>
+			</dict>
+		</dict>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -20,8 +41,6 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSCameraUsageDescription</key>
-	<string></string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
