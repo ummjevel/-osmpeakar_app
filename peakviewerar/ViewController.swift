@@ -237,16 +237,16 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
             return
         }
         
-        guard let currentLat = locationManager2.location?.coordinate.latitude else {
+        guard var currentLat = locationManager2.location?.coordinate.latitude else {
             print("currentLat is empty.")
             return
         }
-        guard let currentLon = locationManager2.location?.coordinate.longitude else {
+        guard var currentLon = locationManager2.location?.coordinate.longitude else {
             print("currentLon is empty.")
             return
         }
-        //currentLat = 38.1191725
-        // currentLon = -128.4653076
+        // currentLat = 37.648223876953125
+        // currentLon = -127.0356792289587
         print("\(currentLat), \(currentLon)")
         // locationManager = CLLocationManager()
         // locationManager!.desiredAccuracy = kCLLocationAccuracyBest
@@ -333,25 +333,58 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
                         }
                     }
                     print("내가 그림!")
-                } else if responseResult2.result == "CREATED" {
-                    // not found... show message
-                    //print("httpstatuscode is 201(CREATED...) nothing in here.")
-                    /*
-                    let text = SCNText(string: "Nothing in here...", extrusionDepth: 1.0)
-                    text.firstMaterial?.diffuse.contents = UIColor.blue
-                    let textNode = SCNNode(geometry: text)
-                    textNode.position = SCNVector3(0, 0, -0.5)
-                    textNode.scale =  SCNVector3(0.02, 0.02, 0.02)
-                    self.sceneView.scene.rootNode.addChildNode(textNode)*/
                 } else {
-                    // error... show message
+                    var titleMessage = "An error is occured. We apologize for the inconvenience of using it."
+                    
+                    if responseResult2.result == "CREATED" {
+                        titleMessage = "No searched data. Please check your location."
+                        print("httpstatuscode is 201(CREATED...) nothing in here.")
+                    } else {
+                        print("httpstatuscode is error...")
+                    }
+                    
+                    self.sceneLocationView.removeAllNodes()
+                    let placeLocation = CLLocation(coordinate: self.locationManager2.location!.coordinate, altitude: 1)
+                    let placeAnnotationNode = PeakMarker(location: placeLocation, title: titleMessage, markerType: MarkerType.message)
+                    self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                    // let placeAnnotationNode = PeakMarker(location: self.locationManager2.location, title: "nothing in here")
+                    // self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                    // print("added nothing text...")
+                    // self.sceneView.scene.rootNode.addChildNode(textNode)
                     /*
-                    let text = SCNText(string: "ERROR... sorry", extrusionDepth: 1.0)
-                    text.firstMaterial?.diffuse.contents = UIColor.blue
-                    let textNode = SCNNode(geometry: text)
-                    textNode.position = SCNVector3(0, 0, -0.5)
-                    textNode.scale =  SCNVector3(0.02, 0.02, 0.02)
-                    self.sceneView.scene.rootNode.addChildNode(textNode)*/
+                    let scn = SCNNode(geometry: text)
+                    scn.position = SCNVector3(0, 0.1, -0.2)
+                    
+                    let scene = SCNScene()
+                    let textGeometry = SCNText(string: "hello world", extrusionDepth: 1.0)
+                    textGeometry.firstMaterial?.diffuse.contents = UIColor.green
+                    let textNode2 = SCNNode(geometry: textGeometry)
+                    textNode2.position = SCNVector3(x: 0, y: 0.1, z: -0.5)
+                    textNode2.scale = SCNVector3(0.02, 0.02, 0.02)
+                    scene.rootNode.addChildNode(textNode2)
+                    
+                    let myCamera = SCNCamera()
+                    myCamera.xFov = 40
+                    myCamera.yFov = 40
+                    let myCameraNode = SCNNode()
+                    myCameraNode.camera = myCamera
+                    myCameraNode.position = SCNVector3(x: -25, y: 20, z: 30)
+                    myCameraNode.orientation = SCNQuaternion(x: -0.26, y: -0.32, z: 0, w: 0.91)
+                    scene.rootNode.addChildNode(myCameraNode)
+                    
+                    let myAmbientLight = SCNLight()
+                    myAmbientLight.type = SCNLight.LightType.ambient
+                    myAmbientLight.color = UIColor.yellow
+                    let myAmbientLightNode = SCNNode()
+                    myAmbientLightNode.light = myAmbientLight
+                    scene.rootNode.addChildNode(myAmbientLightNode)
+                    
+                    // let skTransition:SKTransition = SKTransition.crossFade(withDuration: 1.0)
+                    let skTransition:SKTransition = SKTransition.push(with: SKTransitionDirection.down, duration: 2.0)
+                    self.sceneLocationView.present(scene, with: skTransition, incomingPointOfView: textNode2, completionHandler: {
+                        print("hello...")
+                    })
+                    */
                 }
                 
             } else {
