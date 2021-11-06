@@ -58,9 +58,9 @@ class PeakMarker : LocationNode {
     private func initializeUI() {
         
         let text = SCNText(string: self.title, extrusionDepth: 0)
-        text.containerFrame = CGRect(x: 0, y: 0, width: 20, height: 5)
+        text.containerFrame = CGRect(x: 0, y: 0, width: 10, height: 3)
         text.isWrapped = true
-        text.font = UIFont(name: "HelveticaNeue-Medium", size: 2.0)
+        text.font = UIFont(name: "ArialMT", size: 1.5)
         text.alignmentMode = (CATextLayerAlignmentMode.center).rawValue // kCAAlignmentCenter
         text.truncationMode = (CATextLayerTruncationMode.middle).rawValue // kCATruncationMiddle
         text.firstMaterial?.diffuse.contents = UIColor.darkText
@@ -72,10 +72,14 @@ class PeakMarker : LocationNode {
         
         let textNode = SCNNode(geometry: text)
         textNode.position = SCNVector3(0, 0, 0.2)
+        // SCNVector4(0.0, 0.0, 1.0, ConvertDegreesToRadians(45.0)
+        // textNode.localRotate(by: SCNVector4(0.0, 0.0, 0.3, ConvertDegreesToRadians(angle: 45.0)))
+                             
         center(node: textNode)
         
         let planeNode = SCNNode(geometry: plane)
         planeNode.position = SCNVector3(0, 5, 0)
+        planeNode.localRotate(by: SCNVector4(0.0, 0.0, 0.3, ConvertDegreesToRadians(angle: 45.0)))
         planeNode.addChildNode(textNode)
         
         self.markerNode.scale = SCNVector3(100,100,50)
@@ -87,6 +91,10 @@ class PeakMarker : LocationNode {
         constraints = [billboardConstraint]
         
         self.addChildNode(self.markerNode)
+    }
+    
+    public func ConvertDegreesToRadians(angle: Float) -> Float {
+        return ((Float.pi / 180) * angle);
     }
     
     private func initializeMessage() {

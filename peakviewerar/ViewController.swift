@@ -25,8 +25,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
     // var currentLon: Double = 0.0
     
     var sceneLocationView = SceneLocationView()
-    // var configuration = ARWorldTrackingConfiguration()
+    var configuration = ARWorldTrackingConfiguration()
+    let languageSetting = LanguageSetting.ko
     
+    var authState1 : Int = 0
+    var authState2 : Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +83,7 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
 
         // Run the view's session
         sceneView.session.run(configuration)
+        // 이걸 scneelocationview로 바꾸면 자꾸 위치가 변경되서 나와버림. 근데 검정화면은 안나옴,.
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -87,8 +91,18 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
         
         // Pause the view's session
         sceneView.session.pause()
+        // 이걸 scneelocationview로 바꾸면 자꾸 위치가 변경되서 나와버림. 근데 검정화면은 안나옴..
     }
-
+    
+    private func requestCameraAuthorization() {
+        AVCaptureDevice.requestAccess(for: .video, completionHandler: { (granted: Bool) in
+            if granted {
+                print("카메라 권한 허용")
+            } else {
+                print("카메라 권한 비허용!!")
+            }
+        })
+    }
     // MARK: - ARSCNViewDelegate
     
 /*
@@ -237,11 +251,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
             return
         }
         
-        guard var currentLat = locationManager2.location?.coordinate.latitude else {
+        guard let currentLat = locationManager2.location?.coordinate.latitude else {
             print("currentLat is empty.")
             return
         }
-        guard var currentLon = locationManager2.location?.coordinate.longitude else {
+        guard let currentLon = locationManager2.location?.coordinate.longitude else {
             print("currentLon is empty.")
             return
         }
@@ -321,17 +335,34 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
                 let responseResult2 = Response(result: resultValue, message: messageValue, body: bodyValue)
                 
                 if responseResult2.result == "OK" {
+                    self.sceneLocationView.removeAllNodes()
                     
-                    for child in responseResult2.body {
-                        // ar text 표시
-                        let placeLocation = CLLocation(latitude: child.lat, longitude: child.lon)
-                        
-                        let placeAnnotationNode = PeakMarker(location: placeLocation, title: child.name_en!)
-                        
-                        DispatchQueue.main.async {
-                            self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                    if self.languageSetting == LanguageSetting.en {
+                        // en
+                        for child in responseResult2.body {
+                            // ar text 표시
+                            let placeLocation = CLLocation(latitude: child.lat, longitude: child.lon)
+                            
+                            let placeAnnotationNode = PeakMarker(location: placeLocation, title: child.name_en!)
+                            
+                            DispatchQueue.main.async {
+                                self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                            }
+                        }
+                    } else if self.languageSetting == LanguageSetting.ko {
+                        // en
+                        for child in responseResult2.body {
+                            // ar text 표시
+                            let placeLocation = CLLocation(latitude: child.lat, longitude: child.lon)
+                            let placeAnnotationNode = PeakMarker(location: placeLocation, title: child.name_ko!)
+                            
+                            DispatchQueue.main.async {
+                                self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                            }
                         }
                     }
+                    
+                    // ko
                     print("내가 그림!")
                 } else {
                     var titleMessage = "An error is occured. We apologize for the inconvenience of using it."

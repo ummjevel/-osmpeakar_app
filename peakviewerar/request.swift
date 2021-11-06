@@ -15,6 +15,11 @@ public struct Response : Decodable {
     
 }
 
+enum LanguageSetting {
+    case en
+    case ko
+}
+
 enum ResponseResult: String, Decodable {
     case ok = "OK"
     case created = "CREATED"
@@ -28,6 +33,7 @@ public struct Osm : Decodable {
     let osm_id: Int64
     let natural: String
     let name_en: String?
+    let name_ko: String?
     let lat: Double
     let lon: Double
     /*
