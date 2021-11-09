@@ -79,29 +79,19 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
         super.viewWillAppear(animated)
         
         // Create a session configuration
-        let configuration = ARWorldTrackingConfiguration()
+        // let configuration = ARWorldTrackingConfiguration()
 
         // Run the view's session
-        sceneView.session.run(configuration)
-        // 이걸 scneelocationview로 바꾸면 자꾸 위치가 변경되서 나와버림. 근데 검정화면은 안나옴,.
+        // sceneView.session.run(configuration)
+        sceneLocationView.run()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
         // Pause the view's session
-        sceneView.session.pause()
-        // 이걸 scneelocationview로 바꾸면 자꾸 위치가 변경되서 나와버림. 근데 검정화면은 안나옴..
-    }
-    
-    private func requestCameraAuthorization() {
-        AVCaptureDevice.requestAccess(for: .video, completionHandler: { (granted: Bool) in
-            if granted {
-                print("카메라 권한 허용")
-            } else {
-                print("카메라 권한 비허용!!")
-            }
-        })
+        // sceneView.session.pause()
+        sceneLocationView.run()
     }
     // MARK: - ARSCNViewDelegate
     
