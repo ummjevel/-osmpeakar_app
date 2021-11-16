@@ -28,6 +28,14 @@ class PeakMarker : LocationNode {
         initializeUI()
     }
     
+    init(location: CLLocation?, title: String, type: Int) {
+        self.markerNode = SCNNode()
+        self.title = title
+        self.markerType = MarkerType.marker
+        super.init(location: location)
+        initializeUI2()
+    }
+    
     init(location: CLLocation?, title: String, markerType: MarkerType) {
         self.markerNode = SCNNode()
         self.title = title
@@ -55,6 +63,64 @@ class PeakMarker : LocationNode {
         node.pivot = SCNMatrix4MakeTranslation(dx, dy, dz)
     }
     
+    private func center2(node: SCNNode) {
+        
+        let (min,max) = node.boundingBox
+        // let dx = min.x + 0.5 * (max.x - min.x)
+        let dx = min.x
+        let dy = min.y + 0.5 * (max.y - min.y)
+        let dz = min.z + 0.5 * (max.z - min.z)
+        node.pivot = SCNMatrix4MakeTranslation(dx, dy, dz)
+    }
+    
+    private func initializeUI2() {
+        
+        let text = SCNText(string: self.title, extrusionDepth: 0)
+        text.containerFrame = CGRect(x: 0, y: 0, width: 10, height: 3)
+        text.isWrapped = true
+        text.font = UIFont(name: "ArialMT", size: 1.5)
+        text.alignmentMode = (CATextLayerAlignmentMode.center).rawValue // kCAAlignmentCenter
+        text.truncationMode = (CATextLayerTruncationMode.middle).rawValue // kCATruncationMiddle
+        text.firstMaterial?.diffuse.contents = UIColor.darkText
+        
+        let plane = SCNPlane(width: text.containerFrame.width, height: text.containerFrame.height)
+        plane.cornerRadius = 1
+        plane.firstMaterial?.diffuse.contents = UIColor.lightText
+        
+        let textNode = SCNNode(geometry: text)
+        textNode.position = SCNVector3(0, 0, 0.2)
+        // SCNVector4(0.0, 0.0, 1.0, ConvertDegreesToRadians(45.0)
+        // textNode.localRotate(by: SCNVector4(0.0, 0.0, 0.3, ConvertDegreesToRadians(angle: 45.0)))
+                             
+        center(node: textNode)
+        
+        let planeNode = SCNNode(geometry: plane)
+        planeNode.position = SCNVector3(0, 7, 0)
+        // planeNode.localRotate(by: SCNVector4(0.0, 0.3, 0.3, ConvertDegreesToRadians(angle: 45.0)))
+        planeNode.addChildNode(textNode)
+        
+        // planeNode.pivot = SCNMatrix4MakeTranslation(0, 0, 0)
+        planeNode.eulerAngles = SCNVector3(0, 0, 0.3)
+        
+        // let dx = planeNode.simdWorldPosition.x
+        // let dy = planeNode.simdWorldPosition.y
+        // let dz = planeNode.simdWorldPosition.z
+        // planeNode.pivot = SCNMatrix4MakeTranslation(dx, dy, dz)
+        // planeNode.childNodes[0].transform = SCNMatrix4(simdWorldTransform)
+        
+        planeNode.simdLocalTranslate(by: simd_float3(x: 5, y: 0.0, z: 0.0))
+        
+        self.markerNode.scale = SCNVector3(100,100,50)
+        self.markerNode.addChildNode(planeNode)
+        
+        // text 방향이 사용자를 향하도록 조정
+        let billboardConstraint = SCNBillboardConstraint()
+        billboardConstraint.freeAxes = SCNBillboardAxis.Y
+        constraints = [billboardConstraint]
+        
+        self.addChildNode(self.markerNode)
+    }
+    
     private func initializeUI() {
         
         let text = SCNText(string: self.title, extrusionDepth: 0)
@@ -78,8 +144,8 @@ class PeakMarker : LocationNode {
         center(node: textNode)
         
         let planeNode = SCNNode(geometry: plane)
-        planeNode.position = SCNVector3(0, 5, 0)
-        planeNode.localRotate(by: SCNVector4(0.0, 0.0, 0.3, ConvertDegreesToRadians(angle: 45.0)))
+        planeNode.position = SCNVector3(0, 7, 0)
+        // planeNode.localRotate(by: SCNVector4(0.0, 0.0, 0.3, ConvertDegreesToRadians(angle: 45.0)))
         planeNode.addChildNode(textNode)
         
         self.markerNode.scale = SCNVector3(100,100,50)

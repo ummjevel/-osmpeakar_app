@@ -345,9 +345,11 @@ class ViewController: UIViewController, ARSCNViewDelegate, ARSessionDelegate, CL
                             // ar text 표시
                             let placeLocation = CLLocation(latitude: child.lat, longitude: child.lon)
                             let placeAnnotationNode = PeakMarker(location: placeLocation, title: child.name_ko!)
+                            let placeAnnotationNode2 = PeakMarker(location: placeLocation, title: child.name_ko!, type: 1)
                             
                             DispatchQueue.main.async {
-                                self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                                // self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode)
+                                self.sceneLocationView.addLocationNodeWithConfirmedLocation(locationNode: placeAnnotationNode2)
                             }
                         }
                     }
